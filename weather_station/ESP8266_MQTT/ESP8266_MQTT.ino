@@ -3,15 +3,18 @@
 
 // WiFi
 // Make sure to update this for your own WiFi network!
-const char* ssid = "Fritz!Box 7490";
-const char* wifi_password = "01059047167980913948";
+//const char* ssid = "Fritz!Box 7490";
+//const char* wifi_password = "01059047167980913948";
+
+const char* ssid = "Raspberry Network";
+const char* wifi_password = "InfineonTechnologies";
 
 // MQTT
 // Make sure to update this for your own MQTT Broker!
-const char* mqtt_server = "MQTT Broker IP Address";
+const char* mqtt_server = "192.168.4.1";
 const char* mqtt_topic = "Temperature";
-const char* mqtt_username = "MQTT Username";
-const char* mqtt_password = "MQTT Password";
+const char* mqtt_username = "Martin";
+const char* mqtt_password = "Ibanezaeg8ebk";
 // The client id identifies the ESP8266 device. Think of it a bit like a hostname (Or just a name, like Greg).
 const char* clientID = "ESP8266";
 
@@ -60,13 +63,14 @@ void loop() {
     // Here, "Button pressed!" is the Payload, but this could be changed to a sensor reading, for example.
     if (client.publish(mqtt_topic, "Temperature variable")) {
       Serial.println("Message sent");
+      delay(5000);
     }
     // Again, client.publish will return a boolean value depending on whether it succeded or not.
     // If the message failed to send, we will try again, as the connection may have broken.
     else {
       Serial.println("Message failed to send. Reconnecting to MQTT Broker and trying again");
       client.connect(clientID, mqtt_username, mqtt_password);
-      delay(10); // This delay ensures that client.publish doesn't clash with the client.connect call
+      delay(1000); // This delay ensures that client.publish doesn't clash with the client.connect call
       client.publish(mqtt_topic, "Temperature variable");
     }
 }
