@@ -3,8 +3,8 @@
 
 // WiFi
 // Make sure to update this for your own WiFi network!
-const char* ssid = "Your SSID";
-const char* wifi_password = "Your WiFi Password";
+const char* ssid = "Fritz!Box 7490";
+const char* wifi_password = "01059047167980913948";
 
 // MQTT
 // Make sure to update this for your own MQTT Broker!
