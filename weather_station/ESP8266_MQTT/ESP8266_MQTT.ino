@@ -1,11 +1,13 @@
 #include <ESP8266WiFi.h> // Enables the ESP8266 to connect to the local network (via WiFi)
 #include <PubSubClient.h> // Allows us to connect to, and publish to the MQTT broker
+#include <Dps310.h>
 
 // WiFi
 // Make sure to update this for your own WiFi network!
 //const char* ssid = "Fritz!Box 7490";
 //const char* wifi_password = "01059047167980913948";
-
+//================================================================================================================
+//Accesspoint Raspberry Pi 3B+
 const char* ssid = "Raspberry Network";
 const char* wifi_password = "InfineonTechnologies";
 
