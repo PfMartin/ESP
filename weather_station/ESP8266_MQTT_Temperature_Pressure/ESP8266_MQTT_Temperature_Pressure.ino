@@ -11,7 +11,7 @@ Dps310 Dps310PressureSensor = Dps310();
 
 //MQTT settings
 const char* mqtt_server = "192.168.178.62";
-const char* mqtt_topic = "temperature";
+const char* mqtt_topic = "weather_stats";
 //const char* mqtt_username = "";
 //const char* mqtt_password = "";
 const char* clientID = "weather_station";
@@ -47,9 +47,11 @@ void setup() {
 
 void loop() {
   float pressure;
+  float temperature;
   uint8_t oversampling = 7;
   int16_t ret;
   char PressureValue[15];
+  char TempValue[15];
 
   Serial.println();
 
@@ -69,6 +71,23 @@ void loop() {
     delay(10);
     client.publish(mqtt_topic, PressureValue);
   }
+
+  ret = Dps310PressureSensor.measureTempOnce(temperature, oversampling);
+
+  dtostrf(temperature, 8, 2, TempValue);
+
+  if (ret != 0) {
+    Serial.print("Fail! ret = ");
+    Serial.print(ret);
+  } else if (client.publish(mqtt_topic, TempValue)) {
+    Serial.println(TempValue);
+    Serial.println(" degree Celsius");
+  } else {
+    Serial.println("Message failed to send. Reconnecting to MQTT Broker and trying again");
+    client.connect(clientID);
+    delay(10);
+    client.publish(mqtt_topic, TempValue);
+  }  
 
   delay(1000);
   

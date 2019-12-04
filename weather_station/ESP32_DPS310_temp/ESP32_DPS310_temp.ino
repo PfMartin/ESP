@@ -5,7 +5,7 @@ Dps310 Dps310PressureSensor = Dps310();
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   while (!Serial);
   Dps310PressureSensor.begin(Wire);
   Serial.println("Init complete!");
@@ -31,5 +31,5 @@ void loop() {
   }
 
   //Wait some time
-  delay(500);
+  delay(1000);
 }
