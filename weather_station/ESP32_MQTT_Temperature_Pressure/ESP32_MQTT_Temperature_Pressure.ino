@@ -2,6 +2,27 @@
 #include<PubSubClient.h>
 #include<Dps310.h>
 
+//Definitions for the deep sleep mode
+#define uS_TO_S_FACTOR 1000000 //Converstion factor for micro seconds to seconds
+#define TIME_TO_SLEEP 20 //Time ESP32 will go to sleep (in seconds)
+
+RTC_DATA_ATTR int bootCount = 0; //Stores the wake up times in the variable bootCount in the RTC
+
+void print_wakeup_reason(){
+  esp_sleep_wakeup_cause_t wakeup_reason;
+
+  wakeup_reason = esp_sleep_get_wakeup_cause();
+
+  switch(wakeup_reason){
+    case ESP_SLEEP_WAKEUP_EXT0 : Serial.println("Wakeup caused by external signal using RTC_IO"); break;
+    case ESP_SLEEP_WAKEUP_EXT1 : Serial.println("Wakeup caused by external signal using RTC_CNTL"); break;
+    case ESP_SLEEP_WAKEUP_TIMER : Serial.println("Wakeup caused by time"); break;
+    case ESP_SLEEP_WAKEUP_TOUCHPAD : Serial.println("Wakeup caused by touchpad"); break;
+    case ESP_SLEEP_WAKEUP_ULP : Serial.println("Wakeup caused by ULP program"); break;
+    default : Serial.printf("Wakeup was not caused by deep sleep: %d\n", wakeup_reason); break;
+    }
+}
+
 //wLAN credentials
 const char* ssid = "FRITZ!Box 7490";
 const char* wifi_password = "01059047167980913948";
@@ -22,6 +43,11 @@ PubSubClient client(mqtt_server, 1883, wifiClient);
 
 void setup() {
   Serial.begin(115200);
+  
+  ++bootCount;
+  Serial.println("Boot number: " + String(bootCount));
+  print_wakeup_reason(); //Serial print the wakeup reason
+  
 
   Dps310PressureSensor.begin(Wire);
 
@@ -43,9 +69,11 @@ void setup() {
   } else {
     Serial.println("Connection to MQTT Broker failed...");
   }  
-}
 
-void loop() {
+
+
+/*========================================================*/
+  //Actual task for DPS310
   float pressure;
   float temperature;
   uint8_t oversampling = 7;
@@ -89,6 +117,10 @@ void loop() {
     client.publish(mqtt_topic, TempValue);
   }  
 
-  delay(1000);
-  
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+  esp_deep_sleep_start();
+}
+
+
+void loop(){
 }
