@@ -3,8 +3,8 @@
 #include<Dps310.h>
 
 //Definitions for the deep sleep mode
-#define uS_TO_S_FACTOR 1000000 //Converstion factor for micro seconds to seconds
-#define TIME_TO_SLEEP 20 //Time ESP32 will go to sleep (in seconds)
+#define uS_TO_MIN_FACTOR 60000000 //Converstion factor for micro seconds to minutes
+#define TIME_TO_SLEEP 1 //Time ESP32 will go to sleep (in minutes)
 
 RTC_DATA_ATTR int bootCount = 0; //Stores the wake up times in the variable bootCount in the RTC
 
@@ -117,7 +117,7 @@ void setup() {
     client.publish(mqtt_topic, TempValue);
   }  
 
-  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_MIN_FACTOR);
   esp_deep_sleep_start();
 }
 
