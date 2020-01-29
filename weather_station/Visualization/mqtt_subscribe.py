@@ -13,9 +13,11 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     print("Message received: " + msg.payload.decode("utf-8"))
-    print("Message topic: " + msg.topic)
-    print("Message qos: " + msg.qos)
-    print("Message retain flag=" + msg.retain)
+    #print("Message topic: " + msg.topic)
+    #print("Message qos: " + msg.qos)
+    #print("Message retain flag=" + msg.retain)
+    with open("out.txt", "a") as file:
+        file.write(msg.payload.decode("utf-8") + "\n")
 
 broker = "10.120.128.28"
 port = 1883
@@ -23,14 +25,15 @@ topic = "weather_stats"
 
 print("Creating new instance")
 client = mqtt.Client("P1")
-client.on_message = on_message #attach function to the callback
-client.on_connect = on_connect #attach function to the callback
+client.on_message = on_message
+client.on_connect = on_connect
 
 print("Connecting to broker")
 client.connect(broker, port=port)
 
 client.loop_start()
-client.subscribe(topic, qos=0)
+
+client.subscribe(topic, qos = 0)
 time.sleep(2)
 client.publish(topic, "Self publish")
 time.sleep(4)
