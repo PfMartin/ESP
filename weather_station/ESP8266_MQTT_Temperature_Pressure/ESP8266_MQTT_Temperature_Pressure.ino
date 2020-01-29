@@ -3,14 +3,17 @@
 #include <PubSubClient.h>
 
 //wLAN credentials
-const char* ssid = "FRITZ!Box 7490";
-const char* wifi_password = "01059047167980913948";
+const char* ssid = "idn";
+const char* wifi_password = "MxWpQGQue0$G@0FN";
+
+//const char* ssid = "FRITZ!Box 7490";
+//const char* wifi_password = "01059047167980913948";
 
 //Creates a Dps310 object
 Dps310 Dps310PressureSensor = Dps310();
 
 //MQTT settings
-const char* mqtt_server = "192.168.178.62";
+const char* mqtt_server = "10.120.128.28";
 const char* mqtt_topic = "weather_stats";
 //const char* mqtt_username = "";
 //const char* mqtt_password = "";
