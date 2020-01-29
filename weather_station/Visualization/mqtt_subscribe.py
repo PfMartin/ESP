@@ -17,7 +17,7 @@ def on_message(client, userdata, msg):
     print("Message qos: " + msg.qos)
     print("Message retain flag=" + msg.retain)
 
-broker = "192.168.178.62"
+broker = "10.120.128.28"
 port = 1883
 topic = "weather_stats"
 
@@ -28,13 +28,19 @@ client.on_connect = on_connect #attach function to the callback
 
 print("Connecting to broker")
 client.connect(broker, port=port)
-client.loop_start()
 
+client.loop_start()
 client.subscribe(topic, qos=0)
 time.sleep(2)
-client.publish(topic, "Message")
+client.publish(topic, "Self publish")
 time.sleep(4)
 
-print("Exiting")
-client.loop_stop()
+try:
+ print("Waiting for messages")
+ while True:
+  time.sleep(0.1)
 
+except KeyboardInterrupt:
+ print("Exiting")
+ client.loop_stop()
+ client.disconnect()
