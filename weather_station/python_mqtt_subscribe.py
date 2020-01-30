@@ -6,5 +6,5 @@ host = "192.168.178.62"
 client.connect(host)
 
 #Subscribing and printing message
-client.subscribe("data")
+client.subscribe("weather_stats")
 

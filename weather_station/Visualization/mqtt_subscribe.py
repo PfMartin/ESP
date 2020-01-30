@@ -2,6 +2,7 @@
 
 import paho.mqtt.client as mqtt
 import time
+from datetime import datetime
 
 def on_connect(client, userdata, flags, rc):
     global connected
@@ -12,14 +13,14 @@ def on_connect(client, userdata, flags, rc):
         print("Connection failed")
 
 def on_message(client, userdata, msg):
-    print("Message received: " + msg.payload.decode("utf-8"))
+    print("Message received: " + msg.payload.decode("utf-8") + " (" + str(datetime.now()) + ")")
     #print("Message topic: " + msg.topic)
     #print("Message qos: " + msg.qos)
     #print("Message retain flag=" + msg.retain)
-    with open("out.txt", "a") as file:
-        file.write(msg.payload.decode("utf-8") + "\n")
+    with open("values.csv", "a") as file:
+        file.write(msg.payload.decode("utf-8") + "," + str(datetime.now()) + "\n")
 
-broker = "10.120.128.28"
+broker = "192.168.178.62"
 port = 1883
 topic = "weather_stats"
 
@@ -34,9 +35,9 @@ client.connect(broker, port=port)
 client.loop_start()
 
 client.subscribe(topic, qos = 0)
-time.sleep(2)
-client.publish(topic, "Self publish")
-time.sleep(4)
+time.sleep(1)
+client.publish(topic, "value")
+time.sleep(1)
 
 try:
  print("Waiting for messages")
