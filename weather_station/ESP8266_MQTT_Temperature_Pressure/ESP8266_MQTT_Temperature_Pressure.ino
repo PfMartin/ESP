@@ -46,45 +46,39 @@ void setup() {
   } else {
     Serial.println("Connection to MQTT Broker failed...");
   }  
-}
 
-void loop() {
-  float pressure;
+  //float pressure;
   float temperature;
   uint8_t oversampling = 7;
   int16_t ret;
-  char PressureValue[15];
+  //char PressureValue[15];
   char TempValue[15];
 
   Serial.println();
 
-  ret = Dps310PressureSensor.measurePressureOnce(pressure, oversampling);
-
+  /*ret = Dps310PressureSensor.measurePressureOnce(pressure, oversampling);
   dtostrf(pressure, 8, 2, PressureValue);
 
   if (ret != 0) {
     Serial.print("Fail! ret = ");
     Serial.print(ret);
   } else if (client.publish(mqtt_topic, PressureValue)) {
-    Serial.println(PressureValue);
-    Serial.println(" Pascal");
+    Serial.print(PressureValue);
   } else {
     Serial.println("Message failed to send. Reconnecting to MQTT Broker and trying again");
     client.connect(clientID);
     delay(10);
     client.publish(mqtt_topic, PressureValue);
-  }
-
+  }*/
+  
   ret = Dps310PressureSensor.measureTempOnce(temperature, oversampling);
-
-  dtostrf(temperature, 8, 2, TempValue);
-
+  dtostrf(temperature, 5, 2, TempValue);
+  
   if (ret != 0) {
     Serial.print("Fail! ret = ");
     Serial.print(ret);
   } else if (client.publish(mqtt_topic, TempValue)) {
     Serial.println(TempValue);
-    Serial.println(" degree Celsius");
   } else {
     Serial.println("Message failed to send. Reconnecting to MQTT Broker and trying again");
     client.connect(clientID);
@@ -92,6 +86,9 @@ void loop() {
     client.publish(mqtt_topic, TempValue);
   }  
 
-  delay(1000);
+  ESP.deepSleep(1.8e9);
+}
+
+void loop() {
   
 }
