@@ -17,7 +17,7 @@ const char* mqtt_server = "192.168.178.62";
 const char* mqtt_topic = "temperature";
 //const char* mqtt_username = "";
 //const char* mqtt_password = "";
-const char* clientID = "";
+const char* clientID = "D1 Mini";
 
 //Initiate the wLAN and MQTT Client objects
 WiFiClient wifiClient;
@@ -66,9 +66,10 @@ void setup() {
     } else {
       Serial.println("The message has failed to send");
     }
-  
+
+  delay(1000);
   // 1e6us = 1s 
-//  ESP.deepSleep(30e6);
+  ESP.deepSleep(30e6);
 }
 
 void loop() {
