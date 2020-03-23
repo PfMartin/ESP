@@ -6,7 +6,7 @@
 //const char* ssid = "idn";
 //const char* wifi_password = "MxWpQGQue0$G@0FN";
 
-const char* ssid = "FRITZ!Box 7490";
+const char* ssid = "Range_Extender";
 const char* wifi_password = "01059047167980913948";
 
 //Creates a Dps310 object
@@ -14,10 +14,10 @@ Dps310 Dps310PressureSensor = Dps310();
 
 //MQTT settings
 const char* mqtt_server = "192.168.178.62";
-const char* mqtt_topic = "weather_stats";
+const char* mqtt_topic = "temperature";
 //const char* mqtt_username = "";
 //const char* mqtt_password = "";
-const char* clientID = "weather_station";
+const char* clientID = "";
 
 //Initiate the wLAN and MQTT Client objects
 WiFiClient wifiClient;
@@ -47,46 +47,28 @@ void setup() {
     Serial.println("Connection to MQTT Broker failed...");
   }  
 
-  //float pressure;
   float temperature;
   uint8_t oversampling = 7;
   int16_t ret;
-  //char PressureValue[15];
-  char TempValue[15];
+  char TempValue[50];
 
   Serial.println();
-
-  /*ret = Dps310PressureSensor.measurePressureOnce(pressure, oversampling);
-  dtostrf(pressure, 8, 2, PressureValue);
-
-  if (ret != 0) {
-    Serial.print("Fail! ret = ");
-    Serial.print(ret);
-  } else if (client.publish(mqtt_topic, PressureValue)) {
-    Serial.print(PressureValue);
-  } else {
-    Serial.println("Message failed to send. Reconnecting to MQTT Broker and trying again");
-    client.connect(clientID);
-    delay(10);
-    client.publish(mqtt_topic, PressureValue);
-  }*/
   
   ret = Dps310PressureSensor.measureTempOnce(temperature, oversampling);
   dtostrf(temperature, 5, 2, TempValue);
-  
-  if (ret != 0) {
-    Serial.print("Fail! ret = ");
-    Serial.print(ret);
-  } else if (client.publish(mqtt_topic, TempValue)) {
-    Serial.println(TempValue);
-  } else {
-    Serial.println("Message failed to send. Reconnecting to MQTT Broker and trying again");
-    client.connect(clientID);
-    delay(10);
-    client.publish(mqtt_topic, TempValue);
-  }  
 
-  ESP.deepSleep(1.8e9);
+  Serial.println(temperature);
+
+  if (client.publish(mqtt_topic, TempValue)) {
+      Serial.println("The temperature has been sent");
+      Serial.print("TempValue: ");
+      Serial.println(TempValue);
+    } else {
+      Serial.println("The message has failed to send");
+    }
+  
+  // 1e6us = 1s 
+//  ESP.deepSleep(30e6);
 }
 
 void loop() {
