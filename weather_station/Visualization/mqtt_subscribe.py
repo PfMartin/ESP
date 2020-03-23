@@ -17,12 +17,12 @@ def on_message(client, userdata, msg):
     #print("Message topic: " + msg.topic)
     #print("Message qos: " + msg.qos)
     #print("Message retain flag=" + msg.retain)
-    with open("values.csv", "a") as file:
-        file.write(msg.payload.decode("utf-8") + "," + str(datetime.now()) + "\n")
+    #with open("values.csv", "a") as file:
+    #    file.write(msg.payload.decode("utf-8") + "," + str(datetime.now()) + "\n")
 
 broker = "192.168.178.62"
 port = 1883
-topic = "weather_stats"
+topic = "temperature"
 
 print("Creating new instance")
 client = mqtt.Client("P1")
