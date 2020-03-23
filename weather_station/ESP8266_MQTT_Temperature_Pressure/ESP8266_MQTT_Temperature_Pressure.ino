@@ -47,11 +47,12 @@ void setup() {
     Serial.println("Connection to MQTT Broker failed...");
   }  
 
+  unsigned long t;
   float temperature;
   uint8_t oversampling = 7;
   int16_t ret;
   char TempValue[50];
-
+  
   Serial.println();
   
   ret = Dps310PressureSensor.measureTempOnce(temperature, oversampling);
@@ -61,6 +62,10 @@ void setup() {
 
   if (client.publish(mqtt_topic, TempValue)) {
       Serial.println("The temperature has been sent");
+      Serial.print("Time: ");
+      t = millis();
+      Serial.println(t);
+      client.publish(mqtt_topic, t);
       Serial.print("TempValue: ");
       Serial.println(TempValue);
     } else {
@@ -69,7 +74,12 @@ void setup() {
 
   delay(1000);
   // 1e6us = 1s 
+  
+  // 30 sec
   ESP.deepSleep(30e6);
+
+  // 30 min
+  // ESP.deepSleep(1.8e9);
 }
 
 void loop() {
