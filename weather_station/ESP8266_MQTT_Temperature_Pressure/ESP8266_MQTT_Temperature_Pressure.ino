@@ -65,7 +65,6 @@ void setup() {
       Serial.print("Time: ");
       t = millis();
       Serial.println(t);
-      client.publish(mqtt_topic, t);
       Serial.print("TempValue: ");
       Serial.println(TempValue);
     } else {
@@ -78,6 +77,8 @@ void setup() {
   // 30 sec
   ESP.deepSleep(30e6);
 
+  // 10 min
+  ESP.deepSleep(6e8);
   // 30 min
   // ESP.deepSleep(1.8e9);
 }
