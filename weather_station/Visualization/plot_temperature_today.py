@@ -7,7 +7,6 @@ d = datetime.datetime.today()
 today = str(d)[:10]
 
 print('Date: ' + today)
-print(len("2020-03-23 1:50:34.344598"))
 
 x = []
 y = []
@@ -19,12 +18,18 @@ with open('values.csv', 'r') as file:
       x.append(row[1][-15:-10])
       y.append(float(row[0]))
 
-plt.figure(figsize=(10, 10))
+plt.figure(1)
 
 plt.plot(x, y)
-plt.title('%s\nTemperature over time outside of the Basislager' %today)
+plt.title('%s\nOutside temperature Basis Lager' %today)
 plt.xlabel('Time of day')
 plt.xticks(rotation=90)
 plt.ylabel('Temperature in degree Celsius')
+
+mng = plt.get_current_fig_manager()
+# For Linux system
+mng.resize(*mng.window.maxsize())
+# For Windows
+# mng.window.state('zoomed')
 
 plt.show()
