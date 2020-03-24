@@ -7,7 +7,7 @@ from datetime import datetime
 def on_connect(client, userdata, flags, rc):
     global connected
     if rc == 0:
-        print("Connected to broker")
+        # print("Connected to broker")
         connected = True
     else:
         print("Connection failed")
