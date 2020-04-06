@@ -1,6 +1,9 @@
-#include <Dps310.h>
+#include <DHT.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+
+#define DHTPIN 5
+#define DHTTYPE DHT11
 
 //wLAN credentials
 //const char* ssid = "idn";
@@ -8,13 +11,13 @@
 
 const char* ssid = "Range_Extender";
 const char* wifi_password = "01059047167980913948";
-
 //Creates a Dps310 object
-Dps310 Dps310PressureSensor = Dps310();
+DHT dht(DHTPIN, DHTTYPE);
 
 //MQTT settings
 const char* mqtt_server = "192.168.178.62";
-const char* mqtt_topic = "temperature";
+const char* temp_topic = "temperature";
+const char* hum_topic = "humidity";
 //const char* mqtt_username = "";
 //const char* mqtt_password = "";
 const char* clientID = "D1 Mini";
@@ -26,7 +29,8 @@ PubSubClient client(mqtt_server, 1883, wifiClient);
 void setup() {
   Serial.begin(115200);
 
-  Dps310PressureSensor.begin(Wire);
+  Serial.println("Initializing DHT11");
+  dht.begin();
 
   Serial.print("\n Connecting to ");
   Serial.println(ssid);
@@ -48,20 +52,22 @@ void setup() {
   }  
 
   unsigned long t;
-  float temperature;
-  uint8_t oversampling = 7;
-  int16_t ret;
+  float hum = dht.readHumidity();
+  float temp = dht.readTemperature();
   char TempValue[50];
+  char HumValue[50];
   
   Serial.println();
   
-  ret = Dps310PressureSensor.measureTempOnce(temperature, oversampling);
-  dtostrf(temperature, 5, 2, TempValue);
+  
+  dtostrf(temp, 5, 2, TempValue);
+  dtostrf(hum, 5, 2, HumValue);
 
-  Serial.println(temperature);
+  Serial.println(TempValue);
+  Serial.println(HumValue);
 
-  if (client.publish(mqtt_topic, TempValue)) {
-      Serial.println("The temperature has been sent");
+  if (client.publish(temp_topic, TempValue)) {
+      Serial.println("The temperature value has been sent");
       Serial.print("Time: ");
       t = millis();
       Serial.println(t);
@@ -71,16 +77,28 @@ void setup() {
       Serial.println("The message has failed to send");
     }
 
-  delay(1000);
-  // 1e6us = 1s 
+  delay(500);
   
-  // 30 sec
+  if (client.publish(hum_topic, HumValue)){
+    Serial.println("The humidity value has been sent");
+    Serial.print("Time: ");
+    t = millis();
+    Serial.println(t);
+    Serial.print("HumValue: ");
+    Serial.println(HumValue);
+  } else {
+    Serial.println("The message has failed to send");
+  }
+  
+  delay(1000);
+  
+  // 1e6us = 1s 
   ESP.deepSleep(30e6);
-
-  // 10 min
-  ESP.deepSleep(6e8);
-  // 30 min
-  // ESP.deepSleep(1.8e9);
+//
+//  // 10 min
+//  ESP.deepSleep(6e8);
+//  // 30 min
+//  // ESP.deepSleep(1.8e9);
 }
 
 void loop() {
